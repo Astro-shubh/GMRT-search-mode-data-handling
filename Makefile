@@ -1,0 +1,30 @@
+CC=gcc
+CFLAGS=-O -Wall
+
+.PHONY: all
+all: ugmrtfilhead ugmrtusb2fil ugmrtlsb2fil
+
+ugmrtfilhead: filhead.o ugmrtfilhead.o
+	$(CC) -o $@ $^ $(CFLAGS)
+
+filhead.o: filhead.c filhead.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+ugmrtfilhead.o: ugmrtfilhead.c filhead.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+ugmrtusb2fil: filhead.o ugmrtusb2fil.o
+	$(CC) -o $@ $^ $(CFLAGS)
+
+ugmrtusb2fil.o: ugmrtusb2fil.c filhead.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+ugmrtlsb2fil: filhead.o ugmrtlsb2fil.o
+	$(CC) -o $@ $^ $(CFLAGS)
+
+ugmrtlsb2fil.o: ugmrtlsb2fil.c filhead.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+.PHONY: clean
+clean:
+	rm *.o ugmrtfilhead ugmrtusb2fil ugmrtlsb2fil
