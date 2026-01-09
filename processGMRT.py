@@ -1,11 +1,11 @@
 import argparse, os, sys
-from process_modules import *
-from processGMRT_global import *
+from Processing_modules.process_modules import *
+from Processing_modules.processGMRT_global import *
 import logging
 
 #path_data = "/raid/scratch/ssingh/uGMRT_monitoring/10May2025/"
 
-path_data = "../../10May2025/"
+path_data = "../uGMRT_database/16June2025/CD_beam/"
 
 log_file_name = path_data+'process.log'
 # Set up logging to both console and file
@@ -99,7 +99,7 @@ def is_file_empty(file_path):
 
 pairs = find_raw_pairs(path_data)
 print ("Pairs :", pairs)
-sys.exit()
+#sys.exit()
 for j in pairs[0:2]:
     header_file = j[1]
     raw_file = j[0]
@@ -110,7 +110,7 @@ for j in pairs[0:2]:
         logging.info(f"\n Header file is empty so this source will not be processed:")
         logging.info(f"\n Moving to the next source.")
     if sig == 1:
-        source, Ch, freq, samp_time, chwd, bandwidth, LSB, USB, mjd = get_hdr_param(header_file)
+        source, Ch, freq, samp_time, chwd, bandwidth, LSB, USB, mjd, inbits = get_hdr_param(header_file)
         logging.info(f"\n===============Will process for the PSR {source}.==============")
         filterbank_extension = '.fil'
         filebase = source+'.'+freq+'.'+mjd+'.'+bandwidth
@@ -118,7 +118,7 @@ for j in pairs[0:2]:
         outfile_w_path = os.path.join(path_data, out_fil_file)
         logging.info(f"\nName of the filterbank file: {out_fil_file}")
         logging.info(f"\n Started making filterbank file for the PSR {source}.")
-        xx = make_filterbank(path_ugmrt2fil, path_data, raw_file, outfile_w_path, source, mjd, freq, Ch, chwd, samp_time, USB)
+        xx = make_filterbank(path_ugmrt2fil, path_data, raw_file, outfile_w_path, source, mjd, freq, Ch, chwd, samp_time, USB, inbits, inbits)
         logging.info(f"\n Filterbank file produced.") 
 
         ### =========== This part of the code will make the archive files ===============###

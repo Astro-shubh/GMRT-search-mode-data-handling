@@ -1,19 +1,14 @@
-# ugmrt2fil
-Convert uGMRT raw data files to sigproc-filterbank format. Only total intensity 16-bit data is supported at present.
+# Convert batch of GMRT total intensity raw files to sigproc filterbank and fold them using dspsr to generate folded archive files
+Convert uGMRT raw data files to sigproc-filterbank format and generate folded archive files. Total intensity both in 16-bit and 8-bit data are supported at present. Working on extracting total intensity from full stokes GMRT data and converting it to filterbank.
+
+Installation
+============
+
+The package has two parts, one part in python to handle the filesystem, inputs, folding, and outputs. The second part is a modified version of ugmrt2fil that can handle both 8 bit and 16 bit raw data.
+1. `Processing_modules:` This contains python modules needed by the main processGMRT.py code. These modules require standard python packages installed. Also one need to change `path_ugmrt2fil' in the `Processing_modules/processGMRT_global.py` to the current `CPP_utilities` directory and path_par to a folder containing parameter files. Also change the `data_path` in `processGMRT.py` to the folder containing GMRT raw and header files. The folding part requires `dspsr` installed.
+2. `CPP_utilities:` This folder contains modified ugmrt2fil codes and should be istalled using `make` within `CPP_utilities` directory before use.
 
 Usage
 ======
-`$ ugmrt2fil -i <infile> -o <outfile> -j <JNAME> -d <mjd> -f <freq> -c <nchan> -w <bandwidth> -t <sampling_time> [-u] [-h]`
 
-|Option | Description                              |
-|-------|------------------------------------------|
-|`-i`   | Input file in uGMRT raw data format      |
-|`-u`   | Output file in sigproc filterbank format |
-|`-j`   | JNAME of the source                      |
-|`-d`   | Timestamp in MJD                         |
-|`-f`   | Observing frequency (MHz)                |
-|`-c`   | Number of channels                       |
-|`-w`   | Bandwidth of a single channel (MHz)      |
-|`-t`   | Sampling time (s)                        |
-|`-u`   | Enable USB (Default is LSB)              |
-|`-h`   | Display help message.                    |
+`$ python processGMRT.py`
