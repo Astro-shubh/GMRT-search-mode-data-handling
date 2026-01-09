@@ -1,4 +1,4 @@
-# Convert batch of GMRT total intensity raw files to sigproc filterbank and fold them using dspsr to generate folded archive files
+# Process batch of GMRT search mode data
 Convert uGMRT raw data files to sigproc-filterbank format and generate folded archive files. Total intensity both in 16-bit and 8-bit data are supported at present. Working on extracting total intensity from full stokes GMRT data and converting it to filterbank.
 
 Installation
