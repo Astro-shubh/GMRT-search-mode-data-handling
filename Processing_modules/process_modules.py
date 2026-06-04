@@ -115,11 +115,23 @@ def make_filterbank(pathcode, path_data, infile, outfile, jname, mjd, freq, ncha
 
 
 
-def make_archive(Jname, sttime, filfile, path_data, parfile, outfile, make_folded_archive_subband_subint, make_1t_1c_archive, make_1t_subbanded_archive, make_1c_subintegrated_archive, make_sp_low_res_subbands, make_sp_low_res_1ch, make_sp_high_res_subbands, make_sp_high_res_1ch, nbin, ncha, subint_len, nbinsp, nchasp, dspsr_threads):
+def RFI_clean(path_rficlean, filfile, outfile, time_samps=16384, freq_clean_th=3.0, zerodm=True):
+    if zerodm == True:
+        comm = f"{path_rficlean} -t {time_samps} -rt {freq_clean_th} -white -zerodm -pcl -noFDx {filfile} -o {outfile}"
+        os.system(comm)
+    if zerodm == False:
+        comm = f"{path_rficlean} -t {time_samps} -rt {freq_clean_th} -white -pcl -noFDx {filfile} -o {outfile}"
+        os.system(comm)
+
+    return None
+
+
+
+def make_archive(Jname, sttime, filfile, path_data, parfile, outfile, make_folded_archive_subband_subint, make_1t_1c_archive, make_1t_subbanded_archive, make_1c_subintegrated_archive, make_sp_low_res_subbands, make_sp_low_res_1ch, make_sp_high_res_subbands, make_sp_high_res_1ch, nbin, ncha, subint_len, nbinsp, nchasp, dspsr_threads, freq, bw):
     ### First dealing with the fold mode products ##########
     if any(x == 1 for x in [make_folded_archive_subband_subint, make_1t_1c_archive, make_1t_subbanded_archive, make_1c_subintegrated_archive]):
         print ("Will make the folded data product.")
-        master_out_archive =path_data+Jname+".master"
+        master_out_archive =path_data+Jname+"."+str(freq)+"."+str(sttime)+"."+str(bw)+".master"
         command_master_dspsr_fold = f"dspsr {filfile} -N {Jname} -b {nbin} -E {parfile} -L {subint_len} -m {sttime} -A -e ar -t {dspsr_threads} -d 1 -k gmrt -O {master_out_archive}"
         print (command_master_dspsr_fold)
         os.system(command_master_dspsr_fold)
@@ -131,8 +143,28 @@ def make_archive(Jname, sttime, filfile, path_data, parfile, outfile, make_folde
             command21 = f"mv {master_out_archive}.new {folded_subint_subband_file}"
             os.system(command21)
             #print (command21)
+        if make_1t_1c_archive == 1:
+            folded_profile  = path_data+outfile+"_1ch_1t.ar"
+            command_1ch_1t = f"pam -F -T {master_out_archive}.ar -e new1"
+            os.system(command_1ch_1t)
+            command22 = f"mv {master_out_archive}.new1 {folded_profile}"
+            os.system(command22)
+        if make_1t_subbanded_archive ==1:
+           subbanded_timesc_prof = path_data+outfile+"_"+str(ncha)+'_ch_1t.ar'
+           command_nch_1t = f"pam --setnchn {ncha} -T {master_out_archive}.ar -e new2"
+           os.system(command_nch_1t)
+           command22 = f"mv {master_out_archive}.new2 {subbanded_timesc_prof}"
+           os.system(command22)
+    ### This part deals with the single pulse data products ##############
+    if any(x == 1 for x in [make_sp_low_res_subbands, make_sp_low_res_1ch, make_sp_high_res_subbands, make_sp_high_res_1ch]):
+        print ("Will make the single pulse data product.")
+        spmaster_out_archive = path_data+outfile+".sp"
+        command_master_dspsr_sp = f"dspsr {filfile} -N {Jname} -b {nbinsp} -E {parfile} -s -m {sttime} -A -e ar -t {dspsr_threads} -d 1 -k gmrt -O {spmaster_out_archive}"
+        os.system(command_master_dspsr_sp)
+        commmand_fscurch =f"pam {spmaster_out_archive}.ar --setnchn {nchasp} -m"
+        os.system(commmand_fscurch)
 
-
+#dspsr J1829-1751.550.0.60805.76583032791.200.0.fil -A -E /skatvnas3/ssingh/uGMRT_database/parfiles/J1829-1751.par  -s -O sptest -e ar -b 1024 -m 60805.76583032791 -k gmrt -N J1829-1751
     #if all(x == 1 for x in [make_folded_archive_subband_subint, make_1t_1c_archive, make_1t_subbanded_archive, make_1c_subintegrated_archive]):
 
 

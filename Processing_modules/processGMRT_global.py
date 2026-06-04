@@ -16,9 +16,14 @@ def global_variables():
     #### Paths to all code par file directory
     path_ugmrt2fil = "/skatvnas3/ssingh/GMRT-search-mode-data-handling/CPP_utilities/"
     path_par = "/skatvnas3/ssingh/uGMRT_database/parfiles/"
+    path_rficlean = "/skatvnas3/ssingh/GMRT_script/RFIClean/bin/rficlean"
 
     #### Options to keep or remove the filterbank file ########
     keep_filterbank = 1 # make it to 0 if you do not want to save the filterbank file.
+
+    #### RFI cleaning.
+    do_RFI_clean = 1 # make it to 0 if you do not want to do the RFI cleaning.
+    keep_rfi_clean = 1 # make it to 0 if you do not want to keep the RFI cleaned file.
 
     ###### Options for the folded mode data reduction ############
     nbin = 1024
@@ -33,8 +38,8 @@ def global_variables():
     #### In this case the number of bins will be determined dynamically based on the pulse period and the sampling time ####
     #### The function for the dynamical determination of bin size for this case can be found in the code process_modules.py ####
     #### But for the low resolution data it will be kept to 1024 bins and 64 bands #####
-    nbinsp = 1024
-    nchasp = 64
+    nbinsp = 4096
+    nchasp = 8
     make_sp_low_res_subbands = 1 # make it to 0 if you do not want to have subbanded single pulse file with default low resolution.
     make_sp_low_res_1ch = 1 # make it to 0 if you do not want to have single pulse file with low resolution all scrunched in freq.
 
@@ -43,9 +48,9 @@ def global_variables():
     make_sp_high_res_subbands = 1 # make it to 0 if you do not want the single pulse with the highest resolution with subands.###
     make_sp_high_res_1ch = 1 # make it to 0 if you do not want the singe pulse with the highest resolution with band scrunched. ####
      
-    dspsr_threads = 32
+    dspsr_threads = 16
 
-    return path_ugmrt2fil, path_par, keep_filterbank, make_folded_archive_subband_subint, make_1t_1c_archive, make_1t_subbanded_archive, make_1c_subintegrated_archive, make_sp_low_res_subbands, make_sp_low_res_1ch, make_sp_high_res_subbands, make_sp_high_res_1ch, nbin, ncha, subint_len, nbinsp, nchasp, dspsr_threads
+    return path_ugmrt2fil, path_par, path_rficlean, keep_filterbank, make_folded_archive_subband_subint, make_1t_1c_archive, make_1t_subbanded_archive, make_1c_subintegrated_archive, make_sp_low_res_subbands, make_sp_low_res_1ch, make_sp_high_res_subbands, make_sp_high_res_1ch, nbin, ncha, subint_len, nbinsp, nchasp, dspsr_threads, do_RFI_clean, keep_rfi_clean
 
 
 
